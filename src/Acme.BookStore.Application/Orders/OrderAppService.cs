@@ -40,6 +40,27 @@ namespace Acme.BookStore.Orders
             DeletePolicyName = BookStorePermissions.Orders.Create;
         }
 
+        public async Task<OrderDto> GetOrderByContentAsync(CreateOrderDto input)
+        {
+            await CheckGetPolicyAsync();
+
+            if (!(await Repository.AnyAsync(o => o.UserId == input.UserId && o.BookId == input.BookId))) return null;
+
+            var query = from order in Repository
+                        join book in _bookRepository on order.BookId equals book.Id
+                        join author in _authorRepository on book.AuthorId equals author.Id
+                        where order.UserId == input.UserId &&
+                        book.Id == input.BookId
+                        select new { order, book, author };
+
+            var result = await AsyncExecuter.FirstAsync(query);
+
+            var orderDto = ObjectMapper.Map<Order, OrderDto>(result.order);
+            orderDto.Book = ObjectMapper.Map<Book, BookDto>(result.book);
+            orderDto.Book.AuthorName = result.author.Name;
+            return orderDto;
+        }
+
         public override async Task<OrderDto> CreateAsync(CreateOrderDto input)
         {
             await CheckGetListPolicyAsync();
@@ -68,9 +89,7 @@ namespace Acme.BookStore.Orders
             var totalCount = result.Count();
 
             var orderDtos = result.Select(o => {
-                var order = new OrderDto();
-                order.Id = o.order.Id;
-                order.UserId = o.order.UserId;
+                var order = ObjectMapper.Map<Order, OrderDto>(o.order);
                 order.Book = ObjectMapper.Map<Book, BookDto>(o.book);
                 order.Book.AuthorName = o.author.Name;
                 return order;
