@@ -75,7 +75,7 @@ namespace Acme.BookStore.Blazor
             {
                 bookStoreMenu.AddItem(new ApplicationMenuItem(
                     "BooksStore.Orders",
-                    l["Menu:Orders"],
+                    l["Menu:MyOrders"],
                     url: "/orders"
                 ));
             }

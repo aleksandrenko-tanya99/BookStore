@@ -57,8 +57,15 @@
     "Menu:Orders": "Orders",
     "Orders": "Orders",
 
-    "MakeOrder": "Make order"
-
+    "MakeOrder": "Make order",
+    "UserName": "User name",
+    "Permission:MyOrders": "Order Management",
+    "Permission:MyOrders.Create": "Creating new orders",
+    "Permission:MyOrders.Edit": "Editing the orders",
+    "Permission:MyOrders.Delete": "Deleting the orders",
+    "Menu:MyOrders": "My orders",
+    "Approve": "Approve",
+    "Decline": "Decline"
 
 
 

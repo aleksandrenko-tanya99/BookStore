@@ -2,6 +2,7 @@
 using Acme.BookStore.Books;
 using AutoMapper;
 using Acme.BookStore.Orders;
+using Acme.BookStore.Users;
 
 namespace Acme.BookStore
 {
@@ -18,6 +19,8 @@ namespace Acme.BookStore
 
             CreateMap<Order, OrderDto>();
             CreateMap<CreateOrderDto, OrderDto>();
+
+            CreateMap<AppUser, User>();
         }
     }
 }

@@ -27,6 +27,12 @@
                   ShowPager="true"
                   PageSize="PageSize">
             <DataGridColumns>
+                @if (CurrentUser.Name == "admin")
+                {
+                    <DataGridColumn TItem="OrderDto"
+                                    Field="User.UserName"
+                                    Caption="@L["UserName"]"></DataGridColumn>
+                }
                 <DataGridColumn TItem="OrderDto"
                                 Field="Book.Name"
                                 Caption="@L["Name"]"></DataGridColumn>

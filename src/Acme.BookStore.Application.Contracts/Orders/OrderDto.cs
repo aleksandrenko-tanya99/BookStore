@@ -10,5 +10,12 @@ namespace Acme.BookStore.Orders
     {
         public Guid UserId { get; set; }
         public BookDto Book { get; set; }
+        public User User { get; set; }
+    }
+
+    public class User
+    {
+        public Guid Id { get; set; }
+        public string UserName { get; set; }
     }
 }

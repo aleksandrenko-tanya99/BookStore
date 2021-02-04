@@ -1,6 +1,7 @@
 ﻿using Acme.BookStore.Authors;
 using Acme.BookStore.Books;
 using Acme.BookStore.Permissions;
+using Acme.BookStore.Users;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Linq;
@@ -25,14 +26,18 @@ namespace Acme.BookStore.Orders
     {
         private readonly IRepository<Book, Guid> _bookRepository;
         private readonly IRepository<Author, Guid> _authorRepository;
+        private readonly IRepository<AppUser, Guid> _userRepository;
 
         public OrderAppService(
             IRepository<Order, Guid> orderRepository,
             IRepository<Author, Guid> authorRepository,
+            IRepository<AppUser, Guid> userRepository,
             IRepository<Book, Guid> bookRepository) : base(orderRepository)
         {
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;
+            _userRepository = userRepository;
+
             GetPolicyName = BookStorePermissions.Orders.Default;
             GetListPolicyName = BookStorePermissions.Orders.Default;
             CreatePolicyName = BookStorePermissions.Orders.Create;
@@ -47,6 +52,7 @@ namespace Acme.BookStore.Orders
             if (!(await Repository.AnyAsync(o => o.UserId == input.UserId && o.BookId == input.BookId))) return null;
 
             var query = from order in Repository
+                        join user in _userRepository on order.UserId equals user.Id
                         join book in _bookRepository on order.BookId equals book.Id
                         join author in _authorRepository on book.AuthorId equals author.Id
                         where order.UserId == input.UserId &&
@@ -78,11 +84,13 @@ namespace Acme.BookStore.Orders
         {
             await CheckGetListPolicyAsync();
 
+            var isUserAdmin = await _userRepository.AnyAsync(x => x.Name == "admin" && x.Id == input.UserId);
+
             var query = from order in Repository
                         join book in _bookRepository on order.BookId equals book.Id
+                        join user in _userRepository on order.UserId equals user.Id
                         join author in _authorRepository on book.AuthorId equals author.Id
-                        where order.UserId == input.UserId
-                        select new { order, book, author };
+                        select new { order, book, author, user };
 
             var result = await AsyncExecuter.ToListAsync(query);
 
@@ -91,9 +99,15 @@ namespace Acme.BookStore.Orders
             var orderDtos = result.Select(o => {
                 var order = ObjectMapper.Map<Order, OrderDto>(o.order);
                 order.Book = ObjectMapper.Map<Book, BookDto>(o.book);
+                order.User = ObjectMapper.Map<AppUser, User>(o.user);
                 order.Book.AuthorName = o.author.Name;
                 return order;
             }).ToList();
+
+            if (!isUserAdmin)
+            {
+                orderDtos = orderDtos.Where(order => order.UserId == input.UserId).ToList();
+            }
 
             return new PagedResultDto<OrderDto>(
                 totalCount,
