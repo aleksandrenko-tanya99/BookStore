@@ -70,6 +70,16 @@ namespace Acme.BookStore.Blazor
                     url: "/authors"
                 ));
             }
+
+            if (await context.IsGrantedAsync(BookStorePermissions.Orders.Default))
+            {
+                bookStoreMenu.AddItem(new ApplicationMenuItem(
+                    "BooksStore.Orders",
+                    l["Menu:Orders"],
+                    url: "/orders"
+                ));
+            }
+
         }
 
         private Task ConfigureUserMenuAsync(MenuConfigurationContext context)

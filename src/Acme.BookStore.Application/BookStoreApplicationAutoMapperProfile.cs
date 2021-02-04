@@ -1,6 +1,7 @@
 ﻿using Acme.BookStore.Authors;
 using Acme.BookStore.Books;
 using AutoMapper;
+using Acme.BookStore.Orders;
 
 namespace Acme.BookStore
 {
@@ -14,6 +15,9 @@ namespace Acme.BookStore
             CreateMap<Author, AuthorDto>();
 
             CreateMap<Author, AuthorLookupDto>();
+
+            CreateMap<Order, OrderDto>();
+            CreateMap<CreateOrderDto, OrderDto>();
         }
     }
 }

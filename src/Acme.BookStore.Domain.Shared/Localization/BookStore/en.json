@@ -47,7 +47,16 @@
     "BirthDate": "Birth date",
     "NewAuthor": "New author",
 
-    "PickAnAuthor": "Pick an author"
+    "PickAnAuthor": "Pick an author",
+
+    "Permission:Orders": "Order Management",
+    "Permission:Orders.Create": "Creating new orders",
+    "Permission:Orders.Edit": "Editing the orders",
+    "Permission:Orders.Delete": "Deleting the orders",
+    "Menu:Orders": "Orders",
+    "Orders": "Orders",
+
+    "MakeOrder": "Make order"
 
 
 

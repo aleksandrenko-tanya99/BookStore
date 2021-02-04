@@ -1,0 +1,74 @@
+﻿@page "/orders"
+@attribute [Authorize(BookStorePermissions.Orders.Default)]
+@using Acme.BookStore.Permissions
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Application.Dtos
+@using Acme.BookStore.Books
+@using Acme.BookStore.Orders
+@using Acme.BookStore.Localization
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<BookStoreResource> L
+@inject AbpBlazorMessageLocalizerHelper<BookStoreResource> LH
+@inherits AbpCrudPageBase<IOrderAppService, OrderDto, Guid, GetPagedListOrdersDto, CreateOrderDto>
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+            <Column ColumnSize="ColumnSize.IsAuto">
+                <h2>@L["Orders"]</h2>
+            </Column>
+        </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="OrderDto"
+                  Data="OrderList"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridColumn TItem="OrderDto"
+                                Field="Book.Name"
+                                Caption="@L["Name"]"></DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="Book.AuthorName"
+                                Caption="@L["Author"]"></DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="Book.Type"
+                                Caption="@L["Type"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:BookType:{(int)context.Book.Type}"]
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="Book.PublishDate"
+                                Caption="@L["PublishDate"]">
+                    <DisplayTemplate>
+                        @context.Book.PublishDate.ToShortDateString()
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="Book.Price"
+                                Caption="@L["Price"]">
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.CreationTime)"
+                                Caption="@L["CreationTime"]">
+                    <DisplayTemplate>
+                        @context.CreationTime.ToLongDateString()
+                    </DisplayTemplate>
+                </DataGridColumn>
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@code
+{
+    public Orders()
+    {
+        CreatePolicyName = BookStorePermissions.Orders.Create;
+        UpdatePolicyName = BookStorePermissions.Orders.Edit;
+        DeletePolicyName = BookStorePermissions.Orders.Delete;
+    }
+} 

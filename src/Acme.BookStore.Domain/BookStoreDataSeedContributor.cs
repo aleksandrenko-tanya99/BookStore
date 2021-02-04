@@ -2,9 +2,12 @@
 using System.Threading.Tasks;
 using Acme.BookStore.Authors;
 using Acme.BookStore.Books;
+using Acme.BookStore.Orders;
+using Acme.BookStore.Users;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.Domain.Repositories;
+using System.Linq;
 
 namespace Acme.BookStore
 {
@@ -14,13 +17,19 @@ namespace Acme.BookStore
         private readonly IRepository<Book, Guid> _bookRepository;
         private readonly IAuthorRepository _authorRepository;
         private readonly AuthorManager _authorManager;
+        private readonly IRepository<Order, Guid> _orderRepository;
+        private readonly IRepository<AppUser, Guid> _userRepository;
 
         public BookStoreDataSeederContributor(
             IRepository<Book, Guid> bookRepository,
+            IRepository<Order, Guid> orderRepository,
+            IRepository<AppUser, Guid> userRepository,
             IAuthorRepository authorRepository,
             AuthorManager authorManager)
         {
             _bookRepository = bookRepository;
+            _orderRepository = orderRepository;
+            _userRepository = userRepository;
             _authorRepository = authorRepository;
             _authorManager = authorManager;
         }
@@ -48,8 +57,8 @@ namespace Acme.BookStore
                 )
             );
 
-            await _bookRepository.InsertAsync(
-                new Book
+            var orwellBook = await _bookRepository.InsertAsync(
+               new Book
                 {
                     AuthorId = orwell.Id, // SET THE AUTHOR
                     Name = "1984",
@@ -60,7 +69,7 @@ namespace Acme.BookStore
                 autoSave: true
             );
 
-            await _bookRepository.InsertAsync(
+            var douglasBook = await _bookRepository.InsertAsync(
                 new Book
                 {
                     AuthorId = douglas.Id, // SET THE AUTHOR
@@ -71,6 +80,11 @@ namespace Acme.BookStore
                 },
                 autoSave: true
             );
+
+            AppUser adminId = await _userRepository.FirstOrDefaultAsync();
+            await _orderRepository.InsertAsync(
+                new Order(adminId.Id, orwellBook.Id),
+                autoSave: true);
         }
     }
 }
