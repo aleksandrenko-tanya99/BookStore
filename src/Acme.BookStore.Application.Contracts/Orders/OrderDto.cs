@@ -11,6 +11,7 @@ namespace Acme.BookStore.Orders
         public Guid UserId { get; set; }
         public BookDto Book { get; set; }
         public User User { get; set; }
+        public Boolean IsApproved { get; set; }
     }
 
     public class User

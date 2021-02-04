@@ -50,6 +50,8 @@ namespace Acme.BookStore.EntityFrameworkCore
                     .IsRequired();
                 b.HasOne<Book>().WithMany().HasForeignKey(x => x.BookId)
                     .IsRequired();
+                b.Property(x => x.IsApproved)
+                   .HasDefaultValue(false);
             });
         }
     }

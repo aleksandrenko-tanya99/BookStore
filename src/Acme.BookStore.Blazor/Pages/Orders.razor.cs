@@ -18,6 +18,20 @@ namespace Acme.BookStore.Blazor.Pages
         {
             await GetOrdersAsync();
         }
+
+        private async Task ApproveOrder(OrderDto order)
+        {
+            await AppService.UpdateAsync(order.Id, new UpdateOrderDto() { IsApproved = true });
+            await GetOrdersAsync();
+            StateHasChanged();
+        }
+
+        private async Task DeclineOrder(OrderDto order)
+        {
+            await AppService.DeleteAsync(order.Id);
+            await GetOrdersAsync();
+            StateHasChanged();
+        }
         private async Task GetOrdersAsync()
         {
             var result = await AppService.GetListAsync(
@@ -32,6 +46,18 @@ namespace Acme.BookStore.Blazor.Pages
 
             OrderList = result.Items;
             TotalCount = (int)result.TotalCount;
+        }
+        protected override async Task OnDataGridReadAsync(DataGridReadDataEventArgs<OrderDto> e)
+        {
+            CurrentSorting = e.Columns
+                .Where(c => c.Direction != SortDirection.None)
+                .Select(c => c.Field + (c.Direction == SortDirection.Descending ? " DESC" : ""))
+                .JoinAsString(",");
+            CurrentPage = e.Page - 1;
+
+            await GetOrdersAsync();
+
+            StateHasChanged();
         }
 
     }

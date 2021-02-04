@@ -11,7 +11,8 @@ namespace Acme.BookStore.Orders
             OrderDto,
             Guid,
             GetPagedListOrdersDto,
-            CreateOrderDto>
+            CreateOrderDto,
+            UpdateOrderDto>
     {
         public Task<OrderDto> GetOrderByContentAsync(CreateOrderDto input);
     }

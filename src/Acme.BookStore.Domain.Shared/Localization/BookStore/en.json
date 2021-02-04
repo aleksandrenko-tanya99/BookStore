@@ -65,7 +65,8 @@
     "Permission:MyOrders.Delete": "Deleting the orders",
     "Menu:MyOrders": "My orders",
     "Approve": "Approve",
-    "Decline": "Decline"
+    "Decline": "Decline",
+    "Status": "Status"
 
 
 

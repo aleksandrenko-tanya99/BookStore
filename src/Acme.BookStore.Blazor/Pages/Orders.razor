@@ -9,7 +9,7 @@
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<BookStoreResource> L
 @inject AbpBlazorMessageLocalizerHelper<BookStoreResource> LH
-@inherits AbpCrudPageBase<IOrderAppService, OrderDto, Guid, GetPagedListOrdersDto, CreateOrderDto>
+@inherits AbpCrudPageBase<IOrderAppService, OrderDto, Guid, GetPagedListOrdersDto, CreateOrderDto, UpdateOrderDto>
 
 <Card>
     <CardHeader>
@@ -27,6 +27,21 @@
                   ShowPager="true"
                   PageSize="PageSize">
             <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="OrderDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="OrderDto"
+                                          Text="@L["Approve"]"
+                                          RequiredPolicy="@CreatePolicyName"
+                                          Clicked="() => ApproveOrder(context)" />
+                            <EntityAction TItem="OrderDto"
+                                          Text="@L["Decline"]"
+                                          RequiredPolicy="@DeletePolicyName"
+                                          Clicked="() => DeclineOrder(context)" />
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+
                 @if (CurrentUser.Name == "admin")
                 {
                     <DataGridColumn TItem="OrderDto"
@@ -62,6 +77,13 @@
                                 Caption="@L["CreationTime"]">
                     <DisplayTemplate>
                         @context.CreationTime.ToLongDateString()
+                    </DisplayTemplate>
+                </DataGridColumn>
+                <DataGridColumn TItem="OrderDto"
+                                Field="@nameof(OrderDto.IsApproved)"
+                                Caption="@L["Status"]">
+                    <DisplayTemplate>
+                        @(context.IsApproved ? "Yes" : "No")
                     </DisplayTemplate>
                 </DataGridColumn>
             </DataGridColumns>
