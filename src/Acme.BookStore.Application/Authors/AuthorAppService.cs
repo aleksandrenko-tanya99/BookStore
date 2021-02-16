@@ -60,8 +60,10 @@ namespace Acme.BookStore.Authors
         {
             var author = await _authorManager.CreateAsync(
                 input.Name,
+                input.Image,
                 input.BirthDate,
                 input.ShortBio
+               
             );
 
             await _authorRepository.InsertAsync(author);
@@ -81,6 +83,7 @@ namespace Acme.BookStore.Authors
 
             author.BirthDate = input.BirthDate;
             author.ShortBio = input.ShortBio;
+            author.Image = input.Image;
 
             await _authorRepository.UpdateAsync(author);
         }

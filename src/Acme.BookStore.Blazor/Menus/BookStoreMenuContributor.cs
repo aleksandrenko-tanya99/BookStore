@@ -36,6 +36,32 @@ namespace Acme.BookStore.Blazor
             var l = context.GetLocalizer<BookStoreResource>();
 
             context.Menu.Items.Insert(
+               0,
+               new ApplicationMenuItem(
+                   "BookStore.Orders",
+                   l["Menu:Orders"],
+                   url: "/orders"
+               )
+           );
+
+            context.Menu.Items.Insert(
+               0,
+               new ApplicationMenuItem(
+                   "BookStore.Authors",
+                   l["Menu:Authors"],
+                   url: "/authors"
+               )
+           );
+            context.Menu.Items.Insert(
+                0,
+                new ApplicationMenuItem(
+                    "BookStore.Books",
+                    l["Menu:Books"],
+                    url: "/books",
+                    icon: "fa fa-book"
+                )
+            );
+            context.Menu.Items.Insert(
                 0,
                 new ApplicationMenuItem(
                     "BookStore.Home",
@@ -45,40 +71,6 @@ namespace Acme.BookStore.Blazor
                 )
             );
 
-            var bookStoreMenu = new ApplicationMenuItem(
-                "BooksStore",
-                l["Menu:BookStore"],
-                icon: "fa fa-book"
-            );
-
-            context.Menu.AddItem(bookStoreMenu);
-
-            if (await context.IsGrantedAsync(BookStorePermissions.Books.Default))
-            {
-                bookStoreMenu.AddItem(new ApplicationMenuItem(
-                    "BooksStore.Books",
-                    l["Menu:Books"],
-                    url: "/books"
-                ));
-            }
-
-            if (await context.IsGrantedAsync(BookStorePermissions.Authors.Default))
-            {
-                bookStoreMenu.AddItem(new ApplicationMenuItem(
-                    "BooksStore.Authors",
-                    l["Menu:Authors"],
-                    url: "/authors"
-                ));
-            }
-
-            if (await context.IsGrantedAsync(BookStorePermissions.Orders.Default))
-            {
-                bookStoreMenu.AddItem(new ApplicationMenuItem(
-                    "BooksStore.Orders",
-                    l["Menu:MyOrders"],
-                    url: "/orders"
-                ));
-            }
 
         }
 

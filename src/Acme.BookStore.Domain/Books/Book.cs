@@ -13,5 +13,7 @@ namespace Acme.BookStore.Books
         public DateTime PublishDate { get; set; }
 
         public float Price { get; set; }
+        public string Picture { get; set; } = "http://via.placeholder.com/300x300";
+        public string Description { get; set; }
     }
 }

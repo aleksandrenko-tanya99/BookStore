@@ -10,93 +10,106 @@
 @inject IStringLocalizer<BookStoreResource> L
 @inject AbpBlazorMessageLocalizerHelper<BookStoreResource> LH
 @inherits AbpCrudPageBase<IOrderAppService, OrderDto, Guid, GetPagedListOrdersDto, CreateOrderDto, UpdateOrderDto>
-
-<Card>
-    <CardHeader>
-        <Row Class="justify-content-between">
-            <Column ColumnSize="ColumnSize.IsAuto">
-                <h2>@L["My Orders"]</h2>
-            </Column>
-        </Row>
-    </CardHeader>
-    <CardBody>
-        <DataGrid TItem="OrderDto"
-                  Data="OrderList"
-                  ReadData="OnDataGridReadAsync"
-                  TotalItems="TotalCount"
-                  ShowPager="true"
-                  PageSize="PageSize">
-            <DataGridColumns>
-                <DataGridEntityActionsColumn TItem="OrderDto" @ref="@EntityActionsColumn">
-                    <DisplayTemplate>
-                        <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
-                            <EntityAction TItem="OrderDto"
-                                          Text="@L["Approve"]"
-                                          RequiredPolicy="@CreatePolicyName"
-                                          Clicked="() => ApproveOrder(context)" />
-                            <EntityAction TItem="OrderDto"
-                                          Text="@L["Decline"]"
-                                          RequiredPolicy="@DeletePolicyName"
-                                          Clicked="() => DeclineOrder(context)" />
-                        </EntityActions>
-                    </DisplayTemplate>
-                </DataGridEntityActionsColumn>
-
-                @if (CurrentUser.Name == "admin")
-                {
-                    <DataGridColumn TItem="OrderDto"
-                                    Field="User.UserName"
-                                    Caption="@L["UserName"]"></DataGridColumn>
+    <div class="main_page">
+        <style>
+            .main_page {
+                background-image: url(https://images.wallpaperscraft.com/image/book_old_pen_table_vase_rose_red_76972_1280x720.jpg);
+                position: fixed;
+                margin-top: -25px;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+            }
+        </style>
+        <div class="card">
+            <style>
+                .card {
+                    margin-top: 20px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    margin-bottom: 20px;
+                    width: 80%;
+                    height: auto;
                 }
-                <DataGridColumn TItem="OrderDto"
-                                Field="Book.Name"
-                                Caption="@L["Name"]"></DataGridColumn>
-                <DataGridColumn TItem="OrderDto"
-                                Field="Book.AuthorName"
-                                Caption="@L["Author"]"></DataGridColumn>
-                <DataGridColumn TItem="OrderDto"
-                                Field="Book.Type"
-                                Caption="@L["Type"]">
-                    <DisplayTemplate>
-                        @L[$"Enum:BookType:{(int)context.Book.Type}"]
-                    </DisplayTemplate>
-                </DataGridColumn>
-                <DataGridColumn TItem="OrderDto"
-                                Field="Book.PublishDate"
-                                Caption="@L["PublishDate"]">
-                    <DisplayTemplate>
-                        @context.Book.PublishDate.ToShortDateString()
-                    </DisplayTemplate>
-                </DataGridColumn>
-                <DataGridColumn TItem="OrderDto"
-                                Field="Book.Price"
-                                Caption="@L["Price"]">
-                </DataGridColumn>
-                <DataGridColumn TItem="OrderDto"
-                                Field="@nameof(OrderDto.CreationTime)"
-                                Caption="@L["CreationTime"]">
-                    <DisplayTemplate>
-                        @context.CreationTime.ToLongDateString()
-                    </DisplayTemplate>
-                </DataGridColumn>
-                <DataGridColumn TItem="OrderDto"
-                                Field="@nameof(OrderDto.IsApproved)"
-                                Caption="@L["Status"]">
-                    <DisplayTemplate>
-                        @(context.IsApproved ? "Yes" : "No")
-                    </DisplayTemplate>
-                </DataGridColumn>
-            </DataGridColumns>
-        </DataGrid>
-    </CardBody>
-</Card>
+            </style>
+            <Card>
+                <CardHeader>
+                    <Row Class="justify-content-between">
+                        <Column ColumnSize="ColumnSize.IsAuto">
+                            <h2>@L["Orders"]</h2>
+                        </Column>
+                    </Row>
+                </CardHeader>
+                <CardBody>
+                    <DataGrid TItem="OrderDto"
+                              Data="OrderList"
+                              ReadData="OnDataGridReadAsync"
+                              TotalItems="TotalCount"
+                              ShowPager="true"
+                              PageSize="PageSize">
+                        <DataGridColumns>
+                            <DataGridEntityActionsColumn TItem="OrderDto" @ref="@EntityActionsColumn">
+                                <DisplayTemplate>
+                                    <EntityActions TItem="OrderDto" EntityActionsColumn="@EntityActionsColumn">
+                                        <EntityAction TItem="OrderDto"
+                                                      Text="@L["Approve"]"
+                                                      RequiredPolicy="@CreatePolicyName"
+                                                      Clicked="() => ApproveOrder(context)" />
+                                        <EntityAction TItem="OrderDto"
+                                                      Text="@L["Decline"]"
+                                                      RequiredPolicy="@DeletePolicyName"
+                                                      Clicked="() => DeclineOrder(context)" />
+                                    </EntityActions>
+                                </DisplayTemplate>
+                            </DataGridEntityActionsColumn>
 
-@code
+                            @if (CurrentUser.Name == "admin")
+                            {
+                                <DataGridColumn TItem="OrderDto"
+                                                Field="User.UserName"
+                                                Caption="@L["UserName"]"></DataGridColumn>
+                            }
+                            <DataGridColumn TItem="OrderDto"
+                                            Field="Book.Name"
+                                            Caption="@L["Name"]"></DataGridColumn>
+                            <DataGridColumn TItem="OrderDto"
+                                            Field="Book.AuthorName"
+                                            Caption="@L["Author"]"></DataGridColumn>
+                            <DataGridColumn TItem="OrderDto"
+                                            Field="Book.Type"
+                                            Caption="@L["Type"]">
+                                <DisplayTemplate>
+                                    @L[$"Enum:BookType:{(int)context.Book.Type}"]
+                                </DisplayTemplate>
+                            </DataGridColumn>
+
+                            <DataGridColumn TItem="OrderDto"
+                                            Field="Book.Price"
+                                            Caption="@L["Price"]">
+                            </DataGridColumn>
+
+                            <DataGridColumn TItem="OrderDto"
+                                            Field="@nameof(OrderDto.IsApproved)"
+                                            Caption="@L["Status"]">
+                                <DisplayTemplate>
+                                    @(context.IsApproved ? "Yes" : "No")
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                        </DataGridColumns>
+                    </DataGrid>
+                </CardBody>
+            </Card>
+
+            @code
 {
-    public Orders()
-    {
-        CreatePolicyName = BookStorePermissions.Orders.Create;
-        UpdatePolicyName = BookStorePermissions.Orders.Edit;
-        DeletePolicyName = BookStorePermissions.Orders.Delete;
-    }
-} 
+                public Orders()
+                {
+                    CreatePolicyName = BookStorePermissions.Orders.Create;
+                    UpdatePolicyName = BookStorePermissions.Orders.Edit;
+                    DeletePolicyName = BookStorePermissions.Orders.Delete;
+                }
+            }
+            </div></div>

@@ -10,5 +10,7 @@ namespace Acme.BookStore.Authors
         public DateTime BirthDate { get; set; }
 
         public string ShortBio { get; set; }
+
+        public string Image { get; set; } = "http://via.placeholder.com/300x300";
     }
 }

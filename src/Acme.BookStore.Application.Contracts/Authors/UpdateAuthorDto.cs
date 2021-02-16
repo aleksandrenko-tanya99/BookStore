@@ -11,7 +11,9 @@ namespace Acme.BookStore.Authors
 
         [Required]
         public DateTime BirthDate { get; set; }
-
+        [Required]
         public string ShortBio { get; set; }
+        [Required]
+        public string Image { get; set; } = "http://via.placeholder.com/300x300";
     }
 }

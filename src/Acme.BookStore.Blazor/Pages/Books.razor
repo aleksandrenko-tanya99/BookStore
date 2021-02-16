@@ -1,17 +1,91 @@
-﻿        @page "/books"
-        @attribute [Authorize(BookStorePermissions.Books.Default)]
-        @using Acme.BookStore.Permissions
-        @using Microsoft.AspNetCore.Authorization
-        @using Volo.Abp.Application.Dtos
-        @using Acme.BookStore.Books
-        @using Acme.BookStore.Orders
-        @using Acme.BookStore.Localization
-        @using Microsoft.Extensions.Localization
-        @inject IStringLocalizer<BookStoreResource> L
-        @inject AbpBlazorMessageLocalizerHelper<BookStoreResource> LH
-        @inject IOrderAppService OrderAppService
-        @inherits AbpCrudPageBase<IBookAppService, BookDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateBookDto>
+﻿@page "/books"
+@attribute [Authorize(BookStorePermissions.Books.Default)]
+@using Acme.BookStore.Permissions
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.Application.Dtos
+@using Acme.BookStore.Books
+@using Acme.BookStore.Orders
+@using Acme.BookStore.Localization
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<BookStoreResource> L
+@inject AbpBlazorMessageLocalizerHelper<BookStoreResource> LH
+@inject IOrderAppService OrderAppService
+@inherits AbpCrudPageBase<IBookAppService, BookDto, Guid, PagedAndSortedResultRequestDto, CreateUpdateBookDto>
+<div class="main_page">
+    <style>
+        .main_page {
+            background-image: url(https://images.wallpaperscraft.com/image/book_old_pen_table_vase_rose_red_76972_1280x720.jpg);
+            margin-top: -25px;
+            margin-left: -210px;
+            margin-right: -205px;
+            height: auto;
+            width: auto;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+    </style>
 
+    <div class="card">
+        <style>
+
+            .card {
+                margin-top: 20px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: auto;
+                width: 80%;
+                height: 100%;
+                margin-bottom: 20px;
+            }
+        </style>
+
+        <div>
+
+            <ul id="navbar">
+                <li><a href="#">Adventure</a></li>
+                <li><a href="#">Biography</a></li>
+                <li><a href="#">Dystopia</a></li>
+                <li><a href="#">Fantastic</a></li>
+                <li><a href="#">Horror</a></li>
+                <li><a href="#">Science</a></li>
+                <li><a href="#">Science Fiction</a></li>
+                <li><a href="#">Poetry</a></li>
+            </ul>
+
+        </div>
+        <style>
+            #navbar {
+                margin-left: auto;
+                margin-right: auto;
+                margin: 0;
+                padding: 0;
+                list-style-type: none;
+                border: 2px solid #d1946c;
+                border-radius: 20px 5px;
+                width: 100%;
+                text-align: center;
+                background-color: #e4c0a8;
+            }
+
+                #navbar li {
+                    display: inline;
+                }
+
+                #navbar a {
+                    color: #fff;
+                    padding: 5px 10px;
+                    text-decoration: none;
+                    font-weight: bold;
+                    display: inline-block;
+                    width: 100px;
+                }
+
+                    #navbar a:hover {
+                        border-radius: 20px 5px;
+                        background-color: #9f9f9f;
+                    }
+        </style>
         <Card>
             <CardHeader>
                 <Row Class="justify-content-between">
@@ -21,7 +95,7 @@
                     <Column ColumnSize="ColumnSize.IsAuto">
                         @if (HasCreatePermission)
                         {
-                            <Button Color="Color.Primary"
+                            <Button Color="Color.Dark"
                                     Clicked="OpenCreateModalAsync">
                                 @L["NewBook"]
                             </Button>
@@ -37,6 +111,85 @@
                           ShowPager="true"
                           PageSize="PageSize">
                     <DataGridColumns>
+
+                        <DataGridColumn TItem="BookDto"
+                                        Field="@nameof(BookDto.Name)">
+
+                            <DisplayTemplate>
+                                @{
+                                    <div class="name"><a href="/authors/@context.Name">@context.Name</a></div>
+                                    <img src="@context.Picture" />
+                                    <style>
+
+                                        a {
+                                            text-decoration: none;
+                                            color: black;
+                                        }
+
+                                            a:hover {
+                                                text-decoration: underline;
+                                                color: black;
+                                                text-decoration: none;
+                                            }
+
+                                        img {
+                                            height: 300px;
+                                            width: 250px;
+                                        }
+
+                                        .name {
+                                            text-align: center;
+                                            font-weight: bold;
+                                        }
+
+                                        .birth, .bio {
+                                            text-align: left;
+                                        }
+                                    </style>
+                                }
+                            </DisplayTemplate>
+
+                        </DataGridColumn>
+
+                        <DataGridColumn TItem="BookDto"
+                                        Field="@nameof(BookDto.AuthorName)">
+
+                            <DisplayTemplate>
+                                @{
+                                    <div class="birth">
+                                        <b>  Author: </b>
+                                        @context.AuthorName
+                                    </div>
+                                    <div class="bio">
+                                        <b>  Type: </b>
+
+                                        @L[$"Enum:BookType:{(int)context.Type}"]
+                                    </div>
+                                    <div class="bio">
+                                        <b>  PublishDate: </b>
+
+                                        @context.PublishDate.ToShortDateString()
+                                    </div>
+                                    <div class="bio">
+                                        <b>  Price: </b>
+
+                                        @context.Price
+                                    </div>
+                                    <div class="bio">
+                                        <b>  CreationTime: </b>
+
+                                        @context.CreationTime.ToLongDateString()
+                                    </div>
+                                    <div class="bio">
+                                        <b>  Description: </b>
+
+                                        @context.Description
+                                    </div>
+                                }
+                            </DisplayTemplate>
+
+                        </DataGridColumn>
+
                         <DataGridEntityActionsColumn TItem="BookDto" @ref="@EntityActionsColumn">
                             <DisplayTemplate>
                                 <EntityActions TItem="BookDto" EntityActionsColumn="@EntityActionsColumn">
@@ -55,37 +208,7 @@
                                 </EntityActions>
                             </DisplayTemplate>
                         </DataGridEntityActionsColumn>
-                        <DataGridColumn TItem="BookDto"
-                                        Field="@nameof(BookDto.Name)"
-                                        Caption="@L["Name"]"></DataGridColumn>
-                        <DataGridColumn TItem="BookDto"
-                                        Field="@nameof(BookDto.AuthorName)"
-                                        Caption="@L["Author"]"></DataGridColumn>
-                        <DataGridColumn TItem="BookDto"
-                                        Field="@nameof(BookDto.Type)"
-                                        Caption="@L["Type"]">
-                            <DisplayTemplate>
-                                @L[$"Enum:BookType:{(int)context.Type}"]
-                            </DisplayTemplate>
-                        </DataGridColumn>
-                        <DataGridColumn TItem="BookDto"
-                                        Field="@nameof(BookDto.PublishDate)"
-                                        Caption="@L["PublishDate"]">
-                            <DisplayTemplate>
-                                @context.PublishDate.ToShortDateString()
-                            </DisplayTemplate>
-                        </DataGridColumn>
-                        <DataGridColumn TItem="BookDto"
-                                        Field="@nameof(BookDto.Price)"
-                                        Caption="@L["Price"]">
-                        </DataGridColumn>
-                        <DataGridColumn TItem="BookDto"
-                                        Field="@nameof(BookDto.CreationTime)"
-                                        Caption="@L["CreationTime"]">
-                            <DisplayTemplate>
-                                @context.CreationTime.ToLongDateString()
-                            </DisplayTemplate>
-                        </DataGridColumn>
+
                     </DataGridColumns>
                 </DataGrid>
             </CardBody>
@@ -103,7 +226,7 @@
                         <span>@Error</span>
                     </ModalBody>
                     <ModalFooter>
-                        <Button Color="Color.Secondary"
+                        <Button Color="Color.Dark"
                                 Clicked="CloseCantCreateOrderModal">
                             @L["Cancel"]
                         </Button>
@@ -163,10 +286,18 @@
                                 <FieldLabel>@L["Price"]</FieldLabel>
                                 <NumericEdit TValue="float" @bind-Value="NewEntity.Price" />
                             </Field>
+                            <Field>
+                                <FieldLabel>@L["Picture"]</FieldLabel>
+                                <TextEdit @bind-text="@NewEntity.Picture" />
+                            </Field>
+                            <Field>
+                                <FieldLabel>@L["Description"]</FieldLabel>
+                                <MemoEdit Rows="5" @bind-text="@NewEntity.Description" />
+                            </Field>
                         </Validations>
                     </ModalBody>
                     <ModalFooter>
-                        <Button Color="Color.Secondary"
+                        <Button Color="Color.Dark"
                                 Clicked="CloseCreateModalAsync">
                             @L["Cancel"]
                         </Button>
@@ -231,6 +362,14 @@
                                 <FieldLabel>@L["Price"]</FieldLabel>
                                 <NumericEdit TValue="float" @bind-Value="EditingEntity.Price" />
                             </Field>
+                            <Field>
+                                <FieldLabel>@L["Picture"]</FieldLabel>
+                                <TextEdit @bind-text="@EditingEntity.Picture" />
+                            </Field>
+                            <Field>
+                                <FieldLabel>@L["Description"]</FieldLabel>
+                                <MemoEdit Rows="5" @bind-text="@EditingEntity.Description" />
+                            </Field>
                         </Validations>
                     </ModalBody>
                     <ModalFooter>
@@ -288,3 +427,5 @@
                 }
             }
         }
+    </div>
+</div>

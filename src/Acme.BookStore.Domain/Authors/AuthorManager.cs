@@ -17,6 +17,7 @@ namespace Acme.BookStore.Authors
 
         public async Task<Author> CreateAsync(
             [NotNull] string name,
+            [NotNull] string image,
             DateTime birthDate,
             [CanBeNull] string shortBio = null)
         {
@@ -31,8 +32,10 @@ namespace Acme.BookStore.Authors
             return new Author(
                 GuidGenerator.Create(),
                 name,
+                image,
                 birthDate,
                 shortBio
+                
             );
         }
 

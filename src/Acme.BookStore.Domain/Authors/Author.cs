@@ -11,6 +11,8 @@ namespace Acme.BookStore.Authors
         public DateTime BirthDate { get; set; }
         public string ShortBio { get; set; }
 
+        public string Image { get; set; } = "http://via.placeholder.com/300x300";
+
         private Author()
         {
             /* This constructor is for deserialization / ORM purpose */
@@ -19,13 +21,17 @@ namespace Acme.BookStore.Authors
         internal Author(
             Guid id,
             [NotNull] string name,
+            [NotNull] string image,
             DateTime birthDate,
             [CanBeNull] string shortBio = null)
+            
+            
             : base(id)
         {
             SetName(name);
             BirthDate = birthDate;
             ShortBio = shortBio;
+            Image = image;
         }
 
         internal Author ChangeName([NotNull] string name)

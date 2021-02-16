@@ -21,5 +21,9 @@ namespace Acme.BookStore.Books
 
         [Required]
         public float Price { get; set; }
+        [Required]
+        public string Picture { get; set; } = "http://via.placeholder.com/300x300";
+        [Required]
+        public string Description { get; set; }
     }
 }

@@ -2,139 +2,220 @@
 @using Acme.BookStore.Authors
 @inherits BookStoreComponentBase
 @inject IAuthorAppService AuthorAppService
-<Card>
-    <CardHeader>
-        <Row>
-            <Column ColumnSize="ColumnSize.Is6">
-                <h2>@L["Authors"]</h2>
-            </Column>
-            <Column ColumnSize="ColumnSize.Is6">
-                <Paragraph Alignment="TextAlignment.Right">
-                    @if (CanCreateAuthor)
-                    {
-                        <Button Color="Color.Primary"
-                                Clicked="OpenCreateAuthorModal">
-                            @L["NewAuthor"]
-                        </Button>
-                    }
-                </Paragraph>
-            </Column>
-        </Row>
-    </CardHeader>
-    <CardBody>
-        <DataGrid TItem="AuthorDto"
-                  Data="AuthorList"
-                  ReadData="OnDataGridReadAsync"
-                  TotalItems="TotalCount"
-                  ShowPager="true"
-                  PageSize="PageSize">
-            <DataGridColumns>
-                <DataGridColumn Width="150px"
-                                TItem="AuthorDto"
-                                Field="@nameof(AuthorDto.Id)"
-                                Sortable="false"
-                                Caption="@L["Actions"]">
-                    <DisplayTemplate>
-                        <Dropdown>
-                            <DropdownToggle Color="Color.Primary">
-                                @L["Actions"]
-                            </DropdownToggle>
-                            <DropdownMenu>
-                                @if (CanEditAuthor)
-                                {
-                                    <DropdownItem Clicked="() => OpenEditAuthorModal(context)">
-                                        @L["Edit"]
-                                    </DropdownItem>
-                                }
-                                @if (CanDeleteAuthor)
-                                {
-                                    <DropdownItem Clicked="() => DeleteAuthorAsync(context)">
-                                        @L["Delete"]
-                                    </DropdownItem>
-                                }
-                            </DropdownMenu>
-                        </Dropdown>
-                    </DisplayTemplate>
-                </DataGridColumn>
-                <DataGridColumn TItem="AuthorDto"
-                                Field="@nameof(AuthorDto.Name)"
-                                Caption="@L["Name"]"></DataGridColumn>
-                <DataGridColumn TItem="AuthorDto"
-                                Field="@nameof(AuthorDto.BirthDate)"
-                                Caption="@L["BirthDate"]">
-                    <DisplayTemplate>
-                        @context.BirthDate.ToShortDateString()
-                    </DisplayTemplate>
-                </DataGridColumn>
-            </DataGridColumns>
-        </DataGrid>
-    </CardBody>
-</Card>
+<div class="main_page">
+    <style>
+        .main_page {
+            background-image: url(https://images.wallpaperscraft.com/image/book_old_pen_table_vase_rose_red_76972_1280x720.jpg);
+            margin-top: -25px;
+            margin-left: -208px;
+            margin-right: -205px;
+            height: auto;
+            width: auto;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+    </style>
+    <div class="card">
+        <style>
+            .card {
+                margin-top: 20px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: auto;
+                width: 80%;
+                height: 100%;
+                margin-bottom: 20px;
+            }
+        </style>
+        <Card>
+            <CardHeader>
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is6">
+                        <h2>@L["Authors"]</h2>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is6">
+                        <Paragraph Alignment="TextAlignment.Right">
+                            @if (CanCreateAuthor)
+                            {
+                                <Button Color="Color.Dark"
+                                        Clicked="OpenCreateAuthorModal">
+                                    @L["NewAuthor"]
+                                </Button>
+                            }
+                        </Paragraph>
+                    </Column>
+                </Row>
+            </CardHeader>
+            <CardBody>
+                <DataGrid TItem="AuthorDto"
+                          Data="AuthorList"
+                          ReadData="OnDataGridReadAsync"
+                          TotalItems="TotalCount"
+                          ShowPager="true"
+                          PageSize="PageSize">
+                    <DataGridColumns>
 
-<Modal @ref="CreateAuthorModal">
-    <ModalBackdrop />
-    <ModalContent IsCentered="true">
-        <ModalHeader>
-            <ModalTitle>@L["NewAuthor"]</ModalTitle>
-            <CloseButton Clicked="CloseCreateAuthorModal" />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-                <FieldLabel>@L["Name"]</FieldLabel>
-                <TextEdit @bind-text="@NewAuthor.Name" />
-            </Field>
-            <Field>
-                <FieldLabel>@L["BirthDate"]</FieldLabel>
-                <DateEdit TValue="DateTime" @bind-Date="@NewAuthor.BirthDate" />
-            </Field>
-            <Field>
-                <FieldLabel>@L["ShortBio"]</FieldLabel>
-                <MemoEdit Rows="5" @bind-text="@NewAuthor.ShortBio" />
-            </Field>
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary"
-                    Clicked="CloseCreateAuthorModal">
-                @L["Cancel"]
-            </Button>
-            <Button Color="Color.Primary"
-                    Clicked="CreateAuthorAsync">
-                @L["Save"]
-            </Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+                        <DataGridColumn TItem="AuthorDto"
+                                        Field="@nameof(AuthorDto.Name)">
 
-<Modal @ref="EditAuthorModal">
-    <ModalBackdrop />
-    <ModalContent IsCentered="true">
-        <ModalHeader>
-            <ModalTitle>@EditingAuthor.Name</ModalTitle>
-            <CloseButton Clicked="CloseEditAuthorModal" />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-                <FieldLabel>@L["Name"]</FieldLabel>
-                <TextEdit @bind-text="@EditingAuthor.Name" />
-            </Field>
-            <Field>
-                <FieldLabel>@L["BirthDate"]</FieldLabel>
-                <DateEdit TValue="DateTime" @bind-Date="@EditingAuthor.BirthDate" />
-            </Field>
-            <Field>
-                <FieldLabel>@L["ShortBio"]</FieldLabel>
-                <MemoEdit Rows="5" @bind-text="@EditingAuthor.ShortBio" />
-            </Field>
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary"
-                    Clicked="CloseEditAuthorModal">
-                @L["Cancel"]
-            </Button>
-            <Button Color="Color.Primary"
-                    Clicked="UpdateAuthorAsync">
-                @L["Save"]
-            </Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+                            <DisplayTemplate>
+                                @{
+                                    <div class="name"><a href="/authors/@context.Name">@context.Name</a></div>
+                                    <img src="@context.Image" />
+                                    <style>
+
+                                        a {
+                                            text-decoration: none;
+                                            color: black;
+                                        }
+
+                                            a:hover {
+                                                text-decoration: underline;
+                                                color: black;
+                                                text-decoration: none;
+                                            } 
+                                        img {
+                                            height: 300px;
+                                            width: 250px;
+                                        }
+
+                                        .name {
+                                            text-align: center;
+                                            font-weight: bold;
+                                        }
+
+                                        .birth, .bio {
+                                            text-align: left;
+                                        }
+                                    </style>
+                                }
+                            </DisplayTemplate>
+
+                        </DataGridColumn>
+                        <DataGridColumn TItem="AuthorDto"
+                                        Field="@nameof(AuthorDto.BirthDate)">
+
+                            <DisplayTemplate>
+                                @{
+                                    <div class="birth">
+                                        <b>  Date of Birth: </b>
+                                        @context.BirthDate.ToShortDateString()
+                                    </div>
+                                    <b>Biography: </b>
+                                    <div class="bio">@context.ShortBio</div>
+
+                                }
+                            </DisplayTemplate>
+
+                        </DataGridColumn>
+
+                        <DataGridColumn Width="150px"
+                                        TItem="AuthorDto"
+                                        Field="@nameof(AuthorDto.Id)"
+                                        Sortable="false">
+                            <DisplayTemplate>
+                                <Dropdown>
+                                    <DropdownToggle Color="Color.Dark">
+                                        @L["Actions"]
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        @if (CanEditAuthor)
+                                        {
+                                            <DropdownItem Clicked="() => OpenEditAuthorModal(context)">
+                                                @L["Edit"]
+                                            </DropdownItem>
+                                        }
+                                        @if (CanDeleteAuthor)
+                                        {
+                                            <DropdownItem Clicked="() => DeleteAuthorAsync(context)">
+                                                @L["Delete"]
+                                            </DropdownItem>
+                                        }
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                    </DataGridColumns>
+                </DataGrid>
+            </CardBody>
+        </Card>
+
+        <Modal @ref="CreateAuthorModal">
+            <ModalBackdrop />
+            <ModalContent IsCentered="true">
+                <ModalHeader>
+                    <ModalTitle>@L["NewAuthor"]</ModalTitle>
+                    <CloseButton Clicked="CloseCreateAuthorModal" />
+                </ModalHeader>
+                <ModalBody>
+                    <Field>
+                        <FieldLabel>@L["Name"]</FieldLabel>
+                        <TextEdit @bind-text="@NewAuthor.Name" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["Image"]</FieldLabel>
+                        <TextEdit @bind-text="@NewAuthor.Image" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["BirthDate"]</FieldLabel>
+                        <DateEdit TValue="DateTime" @bind-Date="@NewAuthor.BirthDate" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["ShortBio"]</FieldLabel>
+                        <MemoEdit Rows="5" @bind-text="@NewAuthor.ShortBio" />
+                    </Field>
+                </ModalBody>
+                <ModalFooter>
+                    <Button Color="Color.Secondary"
+                            Clicked="CloseCreateAuthorModal">
+                        @L["Cancel"]
+                    </Button>
+                    <Button Color="Color.Primary"
+                            Clicked="CreateAuthorAsync">
+                        @L["Save"]
+                    </Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+
+        <Modal @ref="EditAuthorModal">
+            <ModalBackdrop />
+            <ModalContent IsCentered="true">
+                <ModalHeader>
+                    <ModalTitle>@EditingAuthor.Name</ModalTitle>
+                    <CloseButton Clicked="CloseEditAuthorModal" />
+                </ModalHeader>
+                <ModalBody>
+                    <Field>
+                        <FieldLabel>@L["Name"]</FieldLabel>
+                        <TextEdit @bind-text="@EditingAuthor.Name" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["Image"]</FieldLabel>
+                        <TextEdit @bind-text="@EditingAuthor.Image" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["BirthDate"]</FieldLabel>
+                        <DateEdit TValue="DateTime" @bind-Date="@EditingAuthor.BirthDate" />
+                    </Field>
+                    <Field>
+                        <FieldLabel>@L["ShortBio"]</FieldLabel>
+                        <MemoEdit Rows="5" @bind-text="@EditingAuthor.ShortBio" />
+                    </Field>
+                </ModalBody>
+                <ModalFooter>
+                    <Button Color="Color.Secondary"
+                            Clicked="CloseEditAuthorModal">
+                        @L["Cancel"]
+                    </Button>
+                    <Button Color="Color.Primary"
+                            Clicked="UpdateAuthorAsync">
+                        @L["Save"]
+                    </Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    </div>
+</div>
+        
